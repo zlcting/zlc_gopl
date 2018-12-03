@@ -29,11 +29,6 @@ func initTemplate(fileName string) (err error) {
 	return
 }
 
-/*
-func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
-    DefaultServeMux.HandleFunc(pattern, handler)
-}
-*/
 
 func main() {
 	initTemplate("e:/golang/go_pro/src/safly/index.html")

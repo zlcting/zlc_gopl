@@ -16,3 +16,4 @@ func goo(s int) {
 
 	fmt.Println(<-counter)
 }
+ 
