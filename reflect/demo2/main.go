@@ -32,11 +32,7 @@ func DoFiledAndMethod(input interface{}) {
 
 	getValue := reflect.ValueOf(input)
 	fmt.Println("get all Fields is:", getValue)
-	// 通过运行结果可以得知获取未知类型的interface的具体变量及其类型的步骤为：
-	// 获取方法字段
-	// 1. 先获取interface的reflect.Type，然后通过NumField进行遍历
-	// 2. 再通过reflect.Type的Field获取其Field
-	// 3. 最后通过Field的Interface()得到对应的value
+
 	for i := 0; i < getType.NumField(); i++ {
 		field := getType.Field(i)
 		value := getValue.Field(i).Interface()

@@ -3,6 +3,7 @@ package main
 //假设某公司有两个员工，一个普通员工和一个高级员工， 但是基本薪资是相同的，高级员工多拿奖金。计算公司为员工的总开支。
 import (
 	"fmt"
+	"reflect"
 )
 
 // 薪资计算器接口
@@ -37,7 +38,22 @@ func totalExpense(s []SalaryCalculator) {
 
 	for _, v := range s {
 
-		//fmt.Printf("每个人开支:%+v-$%v \n", v, v.CalculateSalary())
+		getType := reflect.TypeOf(v)
+		fmt.Println("get Type is :", getType.Name())
+
+		getValue := reflect.ValueOf(v)
+		fmt.Println("get all Fields is:", getValue)
+		// 获取方法字段
+		// 1. 先获取interface的reflect.Type，然后通过NumField进行遍历
+		// 2. 再通过reflect.Type的Field获取其Field
+		// 3. 最后通过Field的Interface()得到对应的value
+		// for i := 0; i < getType.NumField(); i++ {
+		// 	field := getType.Field(i)
+		// 	value := getValue.Field(i)
+		// 	fmt.Printf("%s: %v = %v\n", field.Name, field.Type, value)
+		// }
+
+		fmt.Printf("个人开支id->%+v:$%v \n", getValue.Field(0), v.CalculateSalary())
 		expense = expense + v.CalculateSalary()
 	}
 
