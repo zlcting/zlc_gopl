@@ -1,5 +1,6 @@
 package main
 
+//send的时候会直接阻塞main goroutine
 //https://mp.weixin.qq.com/s/1-MwFEBEr0uu_P4SCSgtkQ
 import (
 	"fmt"
@@ -16,4 +17,3 @@ func goo(s int) {
 
 	fmt.Println(<-counter)
 }
- 

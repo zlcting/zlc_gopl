@@ -36,14 +36,7 @@ func totalExpense(s []SalaryCalculator) {
 	expense := 0
 
 	for _, v := range s {
-		//断言
-		switch f := v.(type) {
-		case SalaryCalculator:
-			a := f.CalculateSalary()
-			fmt.Println(a)
-		default:
-			fmt.Printf("unknown type\n")
-		}
+
 		//fmt.Printf("每个人开支:%+v-$%v \n", v, v.CalculateSalary())
 		expense = expense + v.CalculateSalary()
 	}
