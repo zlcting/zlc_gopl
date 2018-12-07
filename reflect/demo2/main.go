@@ -12,10 +12,6 @@ type User struct {
 	Age  int
 }
 
-func (u User) ReflectCallFunc() {
-	fmt.Println("Allen.Wu ReflectCallFunc")
-}
-
 func main() {
 
 	user := User{1, "Allen.Wu", 25}
@@ -31,11 +27,11 @@ func DoFiledAndMethod(input interface{}) {
 	fmt.Println("get Type is :", getType.Name())
 
 	getValue := reflect.ValueOf(input)
-	fmt.Println("get all Fields is:", getValue)
+	fmt.Printf("get all Fields is:%+v\n", getValue)
 
 	for i := 0; i < getType.NumField(); i++ {
 		field := getType.Field(i)
-		value := getValue.Field(i).Interface()
+		value := getValue.Field(i)
 		fmt.Printf("%s: %v = %v\n", field.Name, field.Type, value)
 	}
 	// 获取方法

@@ -37,21 +37,11 @@ func totalExpense(s []SalaryCalculator) {
 	expense := 0
 
 	for _, v := range s {
-
 		getType := reflect.TypeOf(v)
 		fmt.Println("get Type is :", getType.Name())
 
 		getValue := reflect.ValueOf(v)
 		fmt.Println("get all Fields is:", getValue)
-		// 获取方法字段
-		// 1. 先获取interface的reflect.Type，然后通过NumField进行遍历
-		// 2. 再通过reflect.Type的Field获取其Field
-		// 3. 最后通过Field的Interface()得到对应的value
-		// for i := 0; i < getType.NumField(); i++ {
-		// 	field := getType.Field(i)
-		// 	value := getValue.Field(i)
-		// 	fmt.Printf("%s: %v = %v\n", field.Name, field.Type, value)
-		// }
 
 		fmt.Printf("个人开支id->%+v:$%v \n", getValue.Field(0), v.CalculateSalary())
 		expense = expense + v.CalculateSalary()

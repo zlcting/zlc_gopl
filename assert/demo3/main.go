@@ -12,6 +12,7 @@ func (s St) Describe() {
 }
 
 func findType(i interface{}) {
+
 	switch v := i.(type) {
 	case Describer:
 		v.Describe()

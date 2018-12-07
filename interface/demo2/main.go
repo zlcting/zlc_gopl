@@ -1,6 +1,6 @@
 package main
 
-//假设某公司有两个员工，一个普通员工和一个高级员工， 但是基本薪资是相同的，高级员工多拿奖金。计算公司为员工的总开支。
+//假设某公司有两个员工，一个普通挖掘机员工和一个蓝翔挖掘机毕业高级员工， 但是基本薪资是相同的，高级员工多拿奖金。计算公司为员工的总开支。
 import (
 	"fmt"
 )
@@ -16,7 +16,7 @@ type Contract struct {
 	basicpay int
 }
 
-// 有蓝翔技校证的员工
+// 有蓝翔技校证的 高级员工
 type Permanent struct {
 	empId    int
 	basicpay int
@@ -49,5 +49,8 @@ func main() {
 	pemp2 := Permanent{2, 3000, 20000}
 	cemp1 := Contract{3, 3000}
 	employees := []SalaryCalculator{pemp1, pemp2, cemp1}
+
+	fmt.Printf("%+v \n", employees)
+
 	totalExpense(employees)
 }

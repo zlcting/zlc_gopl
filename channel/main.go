@@ -13,7 +13,9 @@ func goo(s int) {
 
 	counter := make(chan int)
 
-	counter <- s
+	go func() {
+		counter <- s
+	}()
 
 	fmt.Println(<-counter)
 }
