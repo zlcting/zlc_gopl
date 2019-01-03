@@ -154,29 +154,29 @@ Value 这个结构体虽然很简单，但是附着在 Value 上的方法非常�
 
 官方对 Go 语言的反射功能做了一个抽象的描述，总结出了三大定律，分别是
 
-1.Reflection goes from interface value to reflection object.
+- Reflection goes from interface value toreflection object.
 
-2.Reflection goes from reflection object to interface value.
+- Reflection goes from reflection object to interface value.
 
-3.To modify a reflection object, the value must be settable.
+- To modify a reflection object, the value must be settable.
 
 
 第一个定律的意思是反射将接口变量转换成反射对象 Type 和 Value，这个很好理解，就是下面这两个方法的功能
 
-```
+```go
 func TypeOf(v interface{}) Type
 func ValueOf(v interface{}) Value
 ```
 第二个定律的意思是反射可以通过反射对象 Value 还原成原先的接口变量，这个指的就是 Value 结构体提供的 Interface() 方法。注意它得到的是一个接口变量，如果要换成成原先的变量还需要经过一次造型。
 
-```
+```go
 func (v Value) Interface() interface{}
 ```
 
 前两个定律比较简单，它的意思可以使用前面画的反射关系图来表达。第三个定律的功能不是很好理解，它的意思是想用反射功能来修改一个变量的值，前提是这个值可以被修改。
 
 值类型的变量是不可以通过反射来修改，因为在反射之前，传参的时候需要将值变量转换成接口变量，值内容会被浅拷贝，反射对象 Value 指向的数据内存地址不是原变量的内存地址，而是拷贝后的内存地址。这意味着如果值类型变量可以通过反射功能来修改，那么修改操作根本不会影响到原变量的值，那就白白修改了。所以 reflect 包就直接禁止了通过反射来修改值类型的变量。我们看个例子
-```
+```go
 package main
 
 import "reflect"
@@ -201,7 +201,7 @@ exit status 2
 
 ```
 尝试通过反射来修改整型变量失败了，程序直接抛出了异常。下面我们来尝试通过反射来修改指针变量指向的值，这个是可行的。
-```
+```go
 package main
 
 import "fmt"
@@ -223,7 +223,7 @@ func main() {
 
 结构体也是值类型，也必须通过指针类型来修改。下面我们尝试使用反射来动态修改结构体内部字段的值。
 
-```
+```go
 package main
 
 import "fmt"
