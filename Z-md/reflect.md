@@ -6,7 +6,7 @@
 
 >func ValueOf(v interface{}) Value
 
-```
+```go
 package main
 
 import "fmt"
@@ -30,7 +30,7 @@ int
 
 是一个接口类型，里面定义了非常多的方法用于获取和这个类型相关的一切信息。这个接口的结构体实现隐藏在 reflect 包里，每一种类型都有一个相关的类型结构体来表达它的结构信息。
 
-```
+```go
 type Type interface {
   ...
   Method(i int) Method  // 获取挂在类型上的第 i'th 个方法
@@ -59,7 +59,7 @@ type Type interface {
 }
 ```
 所有的类型结构体都包含一个共同的部分信息，这部分信息使用 rtype 结构体描述，rtype 实现了 Type 接口的所有方法。剩下的不同的部分信息各种特殊类型结构体都不一样。可以将 rtype 理解成父类，特殊类型的结构体是子类，会有一些不一样的字段信息。
-```
+```go
 // 基础类型 rtype 实现了 Type 接口
 type rtype struct {
   size uintptr // 占用字节数
@@ -85,7 +85,7 @@ type structType struct {
 ```
 >reflect.Value
 不同于 reflect.Type 接口，reflect.Value 是结构体类型，一个非常简单的结构体。
-```
+```go
 type Value struct {
   typ *rtype  // 变量的类型结构体
   ptr unsafe.Pointer // 数据指针
@@ -95,7 +95,7 @@ type Value struct {
 ```
 这个接口体包含变量的类型结构体指针、数据的地址指针和一些标志位信息。里面的类型结构体指针字段就是上面的 rtype 结构体地址，存储了变量的类型信息。标志位里有几个位存储了值的「元类型」。下面我们看个简单的例子
 
-```
+```go
 package main
 
 import "reflect"
@@ -127,7 +127,7 @@ Value 结构体的 Type() 方法也可以返回变量的类型信息，它可以
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/bGribGtYC3mK3Ext7BFASMhf5gkM0ZzMZUQDSZadtU8kL0z7sSkQrBIEgq4TpCx97HEEfZwwnNLlnLPf4xRCrXQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 Value 这个结构体虽然很简单，但是附着在 Value 上的方法非常之多，主要是用来方便用户读写 ptr 字段指向的数据内存。虽然我们也可以通过 unsafe 包来精细操控内存，但是使用过于繁琐，使用 Value 结构体提供的方法会更加简单直接。
-```
+```go
  func (v Value) SetLen(n int)  // 修改切片的 len 属性
  func (v Value) SetCap(n int) // 修改切片的 cap 属性
  func (v Value) SetMapIndex(key, val Value) // 修改字典 kv
