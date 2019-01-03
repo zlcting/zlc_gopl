@@ -150,7 +150,7 @@ Value 这个结构体虽然很简单，但是附着在 Value 上的方法非常�
 
 值得注意的是，观察 Value 结构体提供的很多方法，其中有不少会返回 Value 类型。比如反射数组类型的 Index(i int) 方法，它会返回一个新的 Value 对象，这个对象的类型指向数组内部子元素的类型，对象的数据指针会指向数组指定位置子元素所在的内存。
 
->理解 Go 语言官方的反射三大定律
+>**理解 Go 语言官方的反射三大定律**
 官方对 Go 语言的反射功能做了一个抽象的描述，总结出了三大定律，分别是
 
 1.Reflection goes from interface value to reflection object.
