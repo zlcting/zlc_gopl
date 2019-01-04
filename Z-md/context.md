@@ -80,6 +80,7 @@ func main() {
 
 
 **初识Context**
+
 上面说的这种场景是存在的，比如一个网络请求Request，每个Request都需要开启一个goroutine做一些事情，这些goroutine又可能会开启其他的goroutine。所以我们需要一种可以跟踪goroutine的方案，才可以达到控制他们的目的，这就是Go语言为我们提供的Context，称之为上下文非常贴切，它就是goroutine的上下文。
 
 下面我们就使用Go Context重写上面的示例。
@@ -237,6 +238,7 @@ func (*emptyCtx) Value(key interface{}) interface{} {
 这就是emptyCtx实现Context接口的方法，可以看到，这些方法什么都没做，返回的都是nil或者零值。
 
 **Context的继承衍生**
+
 有了如上的根Context，那么是如何衍生更多的子Context的呢？这就要靠context包为我们提供的With系列的函数了。
 
 ```go
