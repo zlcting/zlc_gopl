@@ -65,3 +65,7 @@ func (w *Worker) HeartBeat() {
 		time.Sleep(time.Second * 3)
 	}
 }
+
+func (w *Worker) HeartBeatLease() {
+
+}

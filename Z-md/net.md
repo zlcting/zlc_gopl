@@ -3,11 +3,11 @@
 Go语言(golang)的一个很大的优势，就是很容易的开发出网络后台服务，而且性能快，效率高。在开发后端HTTP网络应用服务的时候，我们需要处理很多HTTP的请求访问，比如常见的API服务，我们就要处理很多HTTP请求，然后把处理的信息返回给使用者。对于这类需求，Golang提供了内置的net/http包帮我们来处理这些HTTP请求，让我们可以比较方便的开发一个HTTP服务。
 
 **net/http**
-
+ 
 ```go
 func main() {
 	http.HandleFunc("/",Index)
-
+ 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

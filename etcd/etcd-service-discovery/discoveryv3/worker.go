@@ -15,7 +15,6 @@ type Worker struct {
 	Name   string
 	IP     string
 	Client *clientv3.Client
-	kv     clientv3.KV
 }
 
 type WorkerInfo struct {
@@ -84,6 +83,7 @@ func (w *Worker) HeartBeat() {
 		}
 	END:
 		time.Sleep(500 * time.Millisecond)
+		//_, err = lease.Revoke(context.TODO(), leaseID) //关闭续约
 	}
 
 	cancelFunc()
