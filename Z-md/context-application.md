@@ -51,7 +51,7 @@ func Rpc(ctx context.Context, url string) error {
 func main() {
     ctx, cancel := context.WithCancel(context.Background())
 
-    // RPC1调用
+    // RPC1调用 
     err := Rpc(ctx, "http://rpc_1_url")
     if err != nil {
         return
