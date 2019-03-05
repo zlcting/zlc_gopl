@@ -27,4 +27,8 @@ sudo docker start
 docker exec -it es /bin/bash
 修改配置es文件
 
+docker pull mobz/elasticsearch-head:5
+docker run -d --name es_admin -p 9100:9100 mobz/elasticsearch-head:5
+//head 插件
+
 http://localhost:9200/
