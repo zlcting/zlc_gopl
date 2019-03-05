@@ -18,3 +18,13 @@ docker container stop
 docker container logs
 
 命令用来查看 docker 容器的输出，即容器里面 Shell 的标准输出。如果docker run命令运行容器的时候，没有使用-it参数，就要用这个命令查看输出。
+
+sudo docker restart es
+重启
+sudo docker start
+启动
+
+docker exec -it es /bin/bash
+修改配置es文件
+
+http://localhost:9200/
