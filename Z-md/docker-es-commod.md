@@ -32,3 +32,8 @@ docker run -d --name es_admin -p 9100:9100 mobz/elasticsearch-head:5
 //head 插件
 
 http://localhost:9200/
+
+sudo docker search kibana //搜索
+
+docker run --name kibana -p 5601:5601 -d -e ELASTICSEARCH_URL=http://127.0.0.1:9200 kibana
+
