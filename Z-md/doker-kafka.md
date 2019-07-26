@@ -53,12 +53,14 @@ $KAFKA_HOME/bin/kafka-topics.sh --create --topic test --zookeeper kafka_zookeepe
 
 $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper kafka_zookeeper_1:2181
 ```
-3.
-发布消息，输入几条消息后，按^C退出发布
+3.发布消息，输入几条消息后，按^C退出发布
 ```
 $KAFKA_HOME/bin/kafka-console-producer.sh --topic=test --broker-list kafka_kafka_1:9092
 ```
-
+4.接受消息
+```
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server kafka_kafka_1:9092 --from-beginning --topic test
+```
 如果接收到了发布的消息，那么说明部署正常，可以正式使用了。
 
 
