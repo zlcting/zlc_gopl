@@ -60,3 +60,9 @@ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=test --broker-list kafka_kafka
 ```
 
 如果接收到了发布的消息，那么说明部署正常，可以正式使用了。
+
+
+docker-compose部署zk集群、kafka集群以及kafka-manager
+
+docker-compose的详细使用方法参考下面这个博客
+https://blog.51cto.com/9291927/2310444
