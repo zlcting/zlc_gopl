@@ -1,4 +1,4 @@
-# **mysql 技能总结**
+# **mysql 相关知识总结**
 mysql的常考的知识点主要集中在 索引 事务 隔离级别 锁机制 数据库引擎 等几个方面
 
 ### 一.首先，先来看一下索引访问的知识 这也是最重要和面试最常遇到的问题
@@ -39,6 +39,18 @@ ps：自增主键和uuid作为主键的区别么？
 #### 3.mysql索引是什么结构的？
 答 ：B+ Tree
 
+![图片](https://mmbiz.qpic.cn/mmbiz_png/SYoYmIOcI5pNETceKAjvsqX8QNKR8ib9JXJObPtDTOcYYOEM0oQH1krZ6gqcGqT2hoc78RiaSUpvx1JbAPISo5Nw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1
+)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/SYoYmIOcI5pNETceKAjvsqX8QNKR8ib9JXmvXI7D577A8KVD24sEByOg3gRW5MGh1B00OVoQn0rM0DHdpiazb5tw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1
+)
+注意一下B+ tree的两个明显特点
+
+数据只出现在叶子节点
+
+所有叶子节点增加了一个链指针
+
+接下来就可以开始编了～～比如数据库索引采用B+ tree的主要原因是B Tree在提高了磁盘IO性能的同时并没有解决元素遍历的效率低下的问题。正是为了解决这个问题，B+ tree应运而生。B+ tree只要遍历叶子节点就可以实现整棵树的遍历。而且在数据库中基于范围的查询是非常频繁的，如果使用B Tree，则需要做局部的中序遍历，可能要跨层访问，效率太慢。
 
 #### 4.联合索引和单列索引（到底为啥联合索引要遵循最左原则）
 假设这是一个多列索引(col1, col2,col3)，对于叶子节点，col1表示的是年龄，col2表示的是姓氏，col3表示的是名字。如下图：
@@ -69,3 +81,12 @@ select * from STUDENT where 年龄=1 and 名字='安';
 **而之所以会有最左原则，是因为联合索引的B+Tree是按照第一个关键字进行索引排列的**
 
 
+#### 5.mysql某表建了多个单索引，查询多个条件时如何走索引的？（--! 还没搞懂 待续）
+有兴趣的大家可以看看下面这个链接
+https://mp.weixin.qq.com/s?__biz=MzIwMDgzMjc3NA==&mid=2247484489&idx=1&sn=b4078d168dfe86d992a5eca26b1e4f4b&chksm=96f66620a181ef362a285dcfb06dedcc07c4ef93edc6784c3466568e2eb4715ac471467dec42&scene=21#wechat_redirect
+## 二 锁机制与事务
+https://zhuanlan.zhihu.com/p/65281198
+
+## 三 隔离级别
+
+https://zhuanlan.zhihu.com/p/59061106
