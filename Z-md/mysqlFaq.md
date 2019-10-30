@@ -81,12 +81,21 @@ select * from STUDENT where 年龄=1 and 名字='安';
 **而之所以会有最左原则，是因为联合索引的B+Tree是按照第一个关键字进行索引排列的**
 
 
-#### 5.mysql某表建了多个单索引，查询多个条件时如何走索引的？（--! 还没搞懂 待续）
+#### 5.mysql某表建了多个单索引，查询多个条件时如何走索引的？（- -! 还没搞懂 待续）
 有兴趣的大家可以看看下面这个链接
 https://mp.weixin.qq.com/s?__biz=MzIwMDgzMjc3NA==&mid=2247484489&idx=1&sn=b4078d168dfe86d992a5eca26b1e4f4b&chksm=96f66620a181ef362a285dcfb06dedcc07c4ef93edc6784c3466568e2eb4715ac471467dec42&scene=21#wechat_redirect
-## 二 锁机制与事务
-https://zhuanlan.zhihu.com/p/65281198
 
-## 三 隔离级别
 
+## 二 隔离级别
+
+
+问：“讲讲mysql有几个事务隔离级别？” 
+你：“读未提交，读已提交，可重复读，串行化四个！默认是可重复读” 
+问：“为什么mysql选可重复读作为默认的隔离级别？” 
+(你面露苦色，不知如何回答！) 
+问:"你们项目中选了哪个隔离级别？为什么？" 
+你：“当然是默认的可重复读，至于原因。。呃。。。” (然后你就可以回去等通知了！)
 https://zhuanlan.zhihu.com/p/59061106
+
+## 三 锁机制与事务
+https://zhuanlan.zhihu.com/p/65281198
