@@ -68,3 +68,30 @@ docker-compose部署zk集群、kafka集群以及kafka-manager
 
 docker-compose的详细使用方法参考下面这个博客
 https://blog.51cto.com/9291927/2310444
+
+```xml
+version: '2.1'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - "zookeeper"
+    environment:
+      KAFKA_BROKER_NO: 0
+      KAFKA_ADVERTISED_HOST_NAME: 10.208.86.17
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.208.86.17:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```      

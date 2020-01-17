@@ -1,6 +1,6 @@
 
 注：https://github.com/apache/flink  github源码
-
+启动tcp服务： nc -l -p 9001
 一、集群部署和启动
 启动：
 bin/start-cluster.sh
@@ -38,86 +38,7 @@ mvn archetype:generate                               \
 -DarchetypeVersion=1.9.0 \
 -DarchetypeVersion=local
 
-3.pox.xml文件中配置基础参数
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.example</groupId>
-    <artifactId>learnflink</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <dependencies>
-    <dependency>
-        <groupId>org.apache.flink</groupId>
-        <artifactId>flink-java</artifactId>
-        <version>1.9.1</version>
-<!--        <scope>provided</scope>-->
-    </dependency>
-    <dependency>
-        <groupId>org.apache.flink</groupId>
-        <artifactId>flink-streaming-java_2.11</artifactId>
-        <version>1.9.1</version>
-<!--        <scope>provided</scope>-->
-    </dependency>
-    <dependency>
-        <groupId>org.apache.flink</groupId>
-        <artifactId>flink-clients_2.11</artifactId>
-        <version>1.9.1</version>
-<!--        <scope>provided</scope>-->
-    </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>com.google.code.findbugs:jsr305</exclude>
-                                    <exclude>org.slf4j:*</exclude>
-                                    <exclude>log4j:*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <!-- Do not copy the signatures in the META-INF folder.
-                                    Otherwise, this might cause SecurityExceptions when using the JAR. -->
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>my.programs.main.clazz</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-</project>
-```
 然后点击idea 的 Import Changes 提示 加载flink包文件
 
 三.应用开发
@@ -222,7 +143,6 @@ KeyedStream<WC> keyed = words
   .keyBy(new KeySelector<WC, String>() {
      public String getKey(WC wc) { return wc.word; }
    });
-
 ```
 [3.Specifying Transformation Functions 指定转换函数](https://ci.apache.org/projects/flink/flink-docs-release-1.9/zh/dev/api_concepts.html#specifying-transformation-functions
  "指定转换函数")
@@ -280,4 +200,42 @@ Rich functions provide, in addition to the user-defined function (map, reduce, e
 
 
 
+[4.Flink DataSet API]( https://ci.apache.org/projects/flink/flink-docs-release-1.9/zh/dev/batch/
+ "")
 
+
+
+
+算子：
+1.Flink单数据流基本转换：map、filter、flatMap
+https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/z8L6QU1ZWW1-O2cn8ixcmg
+2.Flink基于Key的分组转换：keyBy、reduce和aggregations
+https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/2vcKteQIyj31sVrSg1R_2Q
+3.Flink多数据流转换：union和connect
+https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/vz94e-TAKa1da9Nd8O6kFw
+4.Flink并行度和数据重分配
+https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/c4vtqbxhqqVq0hg8C2KGvg
+
+https://zhuanlan.zhihu.com/p/100416194
+
+
+map算子对一个DataStream中的每个元素使用用户自定义的map函数进行处理，每个输入元素对应一个输出元素，最终整个数据流被转换成一个新的DataStream。输出的数据流DataStream[OUT]类型可能和输入的数据流DataStream[IN]不同
+
+flatMap算子和map有些相似，输入都是数据流中的每个元素，与之不同的是，flatMap的输出可以是零个、一个或多个元素，当输出元素是一个列表时，flatMap会将列表展平。
+
+## 也就是说 flatMap是将输入的数据整体进行整理而map是对每一个输入数据进行处理
+
+keyBy算子将DataStream转换成一个KeyedStream。KeyedStream是一种特殊的DataStream，事实上，KeyedStream继承了DataStream，DataStream的各元素随机分布在各Task Slot中，KeyedStream的各元素按照Key分组，分配到各Task Slot中。我们需要向keyBy算子传递一个参数，以告知Flink以什么字段作为Key进行分组。
+我们可以使用数字位置来指定Key：
+
+```Scala
+val dataStream: DataStream[(Int, Double)] = senv.fromElements((1, 1.0), (2, 3.2), (1, 5.5), (3, 10.0), (3, 12.5))
+// 使用数字位置定义Key 按照第一个字段进行分组
+val keyedStream = dataStream.keyBy(0)
+```
+
+自定义sink总结
+1）RichSinkFunction<T> T就是你想要写入对象的类型
+2）重写方法
+open/close 生命周期方法
+invoke 每条记录执行一次
