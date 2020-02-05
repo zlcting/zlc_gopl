@@ -1,19 +1,8 @@
 
 注：https://github.com/apache/flink  github源码
 启动tcp服务： nc -l -p 9001
-一、集群部署和启动
-启动：
-bin/start-cluster.sh
-添加JobManager
-bin/jobmanager.sh ((start|start-foreground) cluster)|stop|stop-all
-添加TaskManager
-bin/taskmanager.sh start|start-foreground|stop|stop-all
-停止服务
-bin/stop-cluster.sh
 
-localhost/
-
-二、开发环境
+### 一、开发环境
 开发工具推荐 idea
 
 1.使用idea创建maven项目
@@ -41,7 +30,7 @@ mvn archetype:generate                               \
 
 然后点击idea 的 Import Changes 提示 加载flink包文件
 
-三.应用开发
+### 二.应用开发
 1.代码步骤
 1).获得一个execution environment，
 2).加载/创建初始数据，
@@ -135,21 +124,21 @@ public static void main(String[] args) throws Exception{
   ```
 3）.Define keys using Key Selector Functions 使用选择函数来指定keys
 
-```java
-// some ordinary POJO
-public class WC {public String word; public int count;}
-DataStream<WC> words = // [...]
-KeyedStream<WC> keyed = words
-  .keyBy(new KeySelector<WC, String>() {
-     public String getKey(WC wc) { return wc.word; }
-   });
-```
+ ```java
+    // some ordinary POJO
+    public class WC {public String word; public int count;}
+    DataStream<WC> words = // [...]
+    KeyedStream<WC> keyed = words
+    .keyBy(new KeySelector<WC, String>() {
+        public String getKey(WC wc) { return wc.word; }
+    });
+ ```
 [3.Specifying Transformation Functions 指定转换函数](https://ci.apache.org/projects/flink/flink-docs-release-1.9/zh/dev/api_concepts.html#specifying-transformation-functions
  "指定转换函数")
 
 1）Implementing an interface 使用接口方法
 
-```java
+ ```java
     DataStreamSource<String> text =  env.socketTextStream("127.0.0.1",9001);
 
      text.flatMap(new MyFlatMapFunction()).keyBy("word")
@@ -168,34 +157,34 @@ KeyedStream<WC> keyed = words
             }
         }
     }
-```
+ ```
 2).Rich functions
 All transformations that require a user-defined function can instead take as argument a rich function. 
 所有需要用户定义函数的转换都可以将富函数作为参数。
 
 例如，代替
 
-```java
-class MyMapFunction implements MapFunction<String, Integer> {
-  public Integer map(String value) { return Integer.parseInt(value); }
-};
-```
+ ```java
+    class MyMapFunction implements MapFunction<String, Integer> {
+    public Integer map(String value) { return Integer.parseInt(value); }
+    };
+ ```
 可以写成
-```java
-class MyMapFunction extends RichMapFunction<String, Integer> {
-  public Integer map(String value) { return Integer.parseInt(value); }
-};
-```
+ ```java
+    class MyMapFunction extends RichMapFunction<String, Integer> {
+    public Integer map(String value) { return Integer.parseInt(value); }
+    };
+ ```
 并且也可以使用匿名函数
-```java
-data.map(new MyMapFunction());
-```
+ ```java
+    data.map(new MyMapFunction());
+ ```
 
-```java
-data.map (new RichMapFunction<String, Integer>() {
-  public Integer map(String value) { return Integer.parseInt(value); }
-});
-```
+ ```java
+    data.map (new RichMapFunction<String, Integer>() {
+    public Integer map(String value) { return Integer.parseInt(value); }
+    });
+ ```
 Rich functions provide, in addition to the user-defined function (map, reduce, etc), four methods: open, close, getRuntimeContext, and setRuntimeContext. These are useful for parameterizing the function (see Passing Parameters to Functions), creating and finalizing local state, accessing broadcast variables (see Broadcast Variables), and for accessing runtime information such as accumulators and counters (see Accumulators and Counters), and information on iterations (see Iterations).
 
 
@@ -228,14 +217,186 @@ flatMap算子和map有些相似，输入都是数据流中的每个元素，与�
 keyBy算子将DataStream转换成一个KeyedStream。KeyedStream是一种特殊的DataStream，事实上，KeyedStream继承了DataStream，DataStream的各元素随机分布在各Task Slot中，KeyedStream的各元素按照Key分组，分配到各Task Slot中。我们需要向keyBy算子传递一个参数，以告知Flink以什么字段作为Key进行分组。
 我们可以使用数字位置来指定Key：
 
-```Scala
+ ```Scala
 val dataStream: DataStream[(Int, Double)] = senv.fromElements((1, 1.0), (2, 3.2), (1, 5.5), (3, 10.0), (3, 12.5))
 // 使用数字位置定义Key 按照第一个字段进行分组
 val keyedStream = dataStream.keyBy(0)
-```
+ ```
 
 自定义sink总结
 1）RichSinkFunction<T> T就是你想要写入对象的类型
 2）重写方法
 open/close 生命周期方法
 invoke 每条记录执行一次
+
+
+
+### 三、编译flink源代码 
+
+ maven的版本需要3.3.x 和 jdk1.8（必要条件）
+ 在flink目录执行编译程序
+ ```maven
+    //快速编译
+    mvn clean install -DskipTests
+    //跳过单元测试
+    mvn clean install -DskipTests -Dfast
+    //指定Hadoop版本
+    mvn clean install -DskipTests -Dhadoop.version=2.6.5
+ ```
+### 四、安装部署
+下载地址
+https://flink.apache.org/downloads.html
+
+ ```
+    cd ~/Downloads        # Go to download directory
+    $ tar xzf flink-*.tgz   # Unpack the downloaded archive
+    $ cd flink-1.9.0
+ ```
+##### 1.单机实例
+启动：
+bin/start-cluster.sh
+
+打开http://localhost:8081 你会获得一个ui界面
+
+![图片](https://ci.apache.org/projects/flink/flink-docs-release-1.9/page/img/quickstart-setup/jobmanager-1.png)
+
+执行一个案例
+第一步启动一个tcp服务
+ ```
+    nc -l -p 9001
+ ```
+提交一个flink 程序 jar包
+ ```
+ $ ./bin/flink run examples/streaming/SocketWindowWordCount.jar --port 9000
+Starting execution of program
+```
+[源码内容地址](https://ci.apache.org/projects/flink/flink-docs-release-1.9/getting-started/tutorials/local_setup.html#read-the-code "")
+
+
+ ```
+ $ nc -l 9000
+    lorem ipsum
+    ipsum ipsum ipsum
+    bye
+ ```
+输出的日志记录在
+ ```
+ $ tail -f log/flink-*-taskexecutor-*.out
+    lorem : 1
+    bye : 1
+    ipsum : 4
+ ```
+
+![图片](https://ci.apache.org/projects/flink/flink-docs-release-1.9/page/img/quickstart-setup/jobmanager-2.png)
+
+![图片](https://ci.apache.org/projects/flink/flink-docs-release-1.9/page/img/quickstart-setup/jobmanager-3.png)
+
+
+停止服务
+bin/stop-cluster.sh
+
+
+
+添加JobManager
+bin/jobmanager.sh ((start|start-foreground) cluster)|stop|stop-all
+
+
+
+添加TaskManager
+bin/taskmanager.sh start|start-foreground|stop|stop-all
+
+JobManager：
+
+TaskManager：
+
+
+#### 2.分布式搭建之 Standalone Cluster
+第一步先按照单机实例安装。
+
+![图片](https://ci.apache.org/projects/flink/flink-docs-release-1.9/page/img/quickstart_cluster.png)
+
+在目录/path/to/flink/conf/
+flink-conf.yaml配置
+主节点ip
+```
+jobmanager.rpc.address: 10.0.0.1
+```
+/path/to/flink/
+conf/slaves
+```
+10.0.0.2
+10.0.0.3
+```
+常用配置
+jobmanager.heap.size jobmanager可用的内存 
+
+taskmanager.heap.size taskmanager可用的内存
+
+taskmanager.numberOfTaskSlots 每个机器可用的cpu个数
+parallelism.default 任务的并行度
+
+io.tmp.dirs 临时文件的目录
+
+
+三 Hadoop yarn flink安装
+1.前置条件
+准备工作需要下载安装Hadoop环境
+
+yarn session 前置条件
+1）、at least Apache Hadoop 2.2
+2）、HDFS (Hadoop Distributed File System) (or another distributed file system supported by Hadoop)
+设置环境变量
+3）、export HADOOP_CLASSPATH=`hadoop classpath`
+
+4）、Start a YARN session where the job manager gets 1 GB of heap space and the task managers 4 GB of heap space assigned:
+
+
+下载对应的Hadoop的flink包
+http://flink.apache.org/downloads.html
+
+编译flink教程可以参考https://blog.csdn.net/aikfk/article/details/102494709
+https://www.jianshu.com/p/f9356a5a388d
+
+当然也可用直接从官网下载对应Hadoop的版本
+
+2.Run a Flink job on YARN
+```
+tar xvzf flink-1.9.0-bin-hadoop2.tgz
+cd flink-1.9.0/
+./bin/flink run -m yarn-cluster -p 4 -yjm 1024m -ytm 4096m ./examples/batch/WordCount.jar
+```
+
+
+3.Start Flink Session
+./bin/yarn-session.sh
+
+```
+Usage:
+   Optional
+     -D <arg>                        Dynamic properties
+     -d,--detached                   Start detached
+     -jm,--jobManagerMemory <arg>    Memory for JobManager Container with optional unit (default: MB)
+     -nm,--name                      Set a custom name for the application on YARN
+     -at,--applicationType           Set a custom application type on YARN
+     -q,--query                      Display available YARN resources (memory, cores)
+     -qu,--queue <arg>               Specify YARN queue.
+     -s,--slots <arg>                Number of slots per TaskManager
+     -tm,--taskManagerMemory <arg>   Memory per TaskManager Container with optional unit (default: MB)
+     -z,--zookeeperNamespace <arg>   Namespace to create the Zookeeper sub-paths for HA mode
+```
+Example
+```
+wget -O LICENSE-2.0.txt http://www.apache.org/licenses/LICENSE-2.0.txt
+hadoop fs -copyFromLocal LICENSE-2.0.txt hdfs:/// ...
+./bin/flink run ./examples/batch/WordCount.jar \
+       --input hdfs:///..../LICENSE-2.0.txt --output hdfs:///.../wordcount-result.txt
+```
+
+yarn session 上执行的taskmanager 开始 使用8G内存  32进程并发
+     ```
+     ./bin/yarn-session.sh -tm 8192 -s 32
+     ```
+
+
+
+![图片](https://ci.apache.org/projects/flink/flink-docs-release-1.9/fig/FlinkOnYarn.svg)
