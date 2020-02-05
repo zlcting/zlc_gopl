@@ -345,8 +345,8 @@ io.tmp.dirs 临时文件的目录
 yarn session 前置条件
 1）、at least Apache Hadoop 2.2
 2）、HDFS (Hadoop Distributed File System) (or another distributed file system supported by Hadoop)
-设置环境变量
-3）、export HADOOP_CLASSPATH=`hadoop classpath`
+
+3）、设置环境变量 export HADOOP_CLASSPATH=`hadoop classpath`
 
 4）、Start a YARN session where the job manager gets 1 GB of heap space and the task managers 4 GB of heap space assigned:
 
